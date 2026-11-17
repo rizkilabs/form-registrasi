@@ -1,8 +1,26 @@
+import { useState } from "react";
 import "./RegisterForm.css";
 
 function RegisterForm() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Data form:", formData);
+  };
+
   return (
-    <form className="register-form">
+    <form className="register-form" onSubmit={handleSubmit}>
       <h2>Registrasi</h2>
 
       <div className="form-group">
@@ -12,6 +30,8 @@ function RegisterForm() {
           type="text"
           name="fullName"
           placeholder="Masukkan nama lengkap"
+          value={formData.fullName}
+          onChange={handleChange}
         />
       </div>
 
@@ -22,6 +42,8 @@ function RegisterForm() {
           type="email"
           name="email"
           placeholder="nama@email.com"
+          value={formData.email}
+          onChange={handleChange}
         />
       </div>
 
@@ -32,6 +54,8 @@ function RegisterForm() {
           type="password"
           name="password"
           placeholder="Minimal 8 karakter"
+          value={formData.password}
+          onChange={handleChange}
         />
       </div>
 
@@ -42,6 +66,8 @@ function RegisterForm() {
           type="password"
           name="confirmPassword"
           placeholder="Ulangi password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
         />
       </div>
 
