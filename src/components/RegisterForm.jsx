@@ -51,6 +51,7 @@ function validate(data) {
 function RegisterForm() {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState(null); // { type: "success" | "error", message }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,6 +61,11 @@ function RegisterForm() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+
+    // hapus banner saat user mulai mengetik lagi
+    if (status) {
+      setStatus(null);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -68,14 +74,32 @@ function RegisterForm() {
     const validationErrors = validate(formData);
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length === 0) {
-      console.log("Form valid:", formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setStatus({
+        type: "error",
+        message: "Registrasi gagal. Periksa kembali isian form kamu.",
+      });
+      return;
     }
+
+    console.log("Form valid:", formData);
+    setStatus({
+      type: "success",
+      message: `Registrasi berhasil! Selamat datang, ${formData.fullName.trim()}.`,
+    });
+    setFormData(initialData);
+    setErrors({});
   };
 
   return (
     <form className="register-form" onSubmit={handleSubmit} noValidate>
       <h2>Registrasi</h2>
+
+      {status && (
+        <div className={`alert alert-${status.type}`} role="alert">
+          {status.message}
+        </div>
+      )}
 
       <div className="form-group">
         <label htmlFor="fullName">Nama Lengkap</label>
