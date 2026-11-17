@@ -12,3 +12,7 @@ Form registrasi dengan React + Vite.
 
 npm install
 npm run dev
+
+## Demo
+
+https://rizkilabs.github.io/form-registrasi
