@@ -1,26 +1,80 @@
 import { useState } from "react";
 import "./RegisterForm.css";
 
+const initialData = {
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+function validate(data) {
+  const errors = {};
+
+  // Nama lengkap
+  const name = data.fullName.trim();
+  if (!name) {
+    errors.fullName = "Nama lengkap wajib diisi";
+  } else if (name.length < 3) {
+    errors.fullName = "Nama lengkap minimal 3 karakter";
+  } else if (!/^[A-Za-z\s.'-]+$/.test(name)) {
+    errors.fullName = "Nama hanya boleh berisi huruf dan spasi";
+  }
+
+  // Email
+  const email = data.email.trim();
+  if (!email) {
+    errors.email = "Email wajib diisi";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = "Format email tidak valid";
+  }
+
+  // Password
+  if (!data.password) {
+    errors.password = "Password wajib diisi";
+  } else if (data.password.length < 8) {
+    errors.password = "Password minimal 8 karakter";
+  } else if (!/[A-Za-z]/.test(data.password) || !/\d/.test(data.password)) {
+    errors.password = "Password harus mengandung huruf dan angka";
+  }
+
+  // Konfirmasi password
+  if (!data.confirmPassword) {
+    errors.confirmPassword = "Konfirmasi password wajib diisi";
+  } else if (data.confirmPassword !== data.password) {
+    errors.confirmPassword = "Konfirmasi password tidak sama";
+  }
+
+  return errors;
+}
+
 function RegisterForm() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] = useState(initialData);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // hapus error field yang sedang diketik
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Data form:", formData);
+
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      console.log("Form valid:", formData);
+    }
   };
 
   return (
-    <form className="register-form" onSubmit={handleSubmit}>
+    <form className="register-form" onSubmit={handleSubmit} noValidate>
       <h2>Registrasi</h2>
 
       <div className="form-group">
@@ -32,7 +86,11 @@ function RegisterForm() {
           placeholder="Masukkan nama lengkap"
           value={formData.fullName}
           onChange={handleChange}
+          className={errors.fullName ? "input-error" : ""}
         />
+        {errors.fullName && (
+          <span className="error-text">{errors.fullName}</span>
+        )}
       </div>
 
       <div className="form-group">
@@ -44,7 +102,9 @@ function RegisterForm() {
           placeholder="nama@email.com"
           value={formData.email}
           onChange={handleChange}
+          className={errors.email ? "input-error" : ""}
         />
+        {errors.email && <span className="error-text">{errors.email}</span>}
       </div>
 
       <div className="form-group">
@@ -56,7 +116,11 @@ function RegisterForm() {
           placeholder="Minimal 8 karakter"
           value={formData.password}
           onChange={handleChange}
+          className={errors.password ? "input-error" : ""}
         />
+        {errors.password && (
+          <span className="error-text">{errors.password}</span>
+        )}
       </div>
 
       <div className="form-group">
@@ -68,7 +132,11 @@ function RegisterForm() {
           placeholder="Ulangi password"
           value={formData.confirmPassword}
           onChange={handleChange}
+          className={errors.confirmPassword ? "input-error" : ""}
         />
+        {errors.confirmPassword && (
+          <span className="error-text">{errors.confirmPassword}</span>
+        )}
       </div>
 
       <button type="submit">Daftar</button>

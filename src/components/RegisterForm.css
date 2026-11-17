@@ -44,3 +44,13 @@
 .register-form button:hover {
   background: #1d4ed8;
 }
+
+.form-group input.input-error {
+  border-color: #dc2626;
+}
+
+.error-text {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #dc2626;
+}
